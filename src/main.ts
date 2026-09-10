@@ -6,7 +6,7 @@ const fecharModal = document.querySelector<HTMLButtonElement>("#fecharModal")!;
 const formAgendamento = document.querySelector<HTMLFormElement>("#formAgendamento")!;
 const camposPorte = document.querySelector<HTMLSelectElement>("#porte")!;
 const campoValor = document.querySelector<HTMLInputElement>("#valor")!;
-const campoHorario = document.querySelector<HTMLInputElement>("#horário")!;
+campoHorario.value = agendamento.horarioISO || "";
 
 // Número do WhatsApp que vai receber a mensagem (com código do país e DDD, sem espaços ou símbolos)
 const numeroWhatsapp = "5511976349686";
