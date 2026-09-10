@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Shop</title>
+</head>
+
+<body>
+  <header class="cabecalho">
+    <a href="login.html" class="logo-link" aria-label="Acessar painel administrativo">
+      <h1 class="logo">
+        <img src="../assets/logo.png" alt="Logo do Pet Shop">
+        <span>Pet Shop </span>
+      </h1>
+    </a>
+
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="servicos.html">Serviços</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+  </header>
+
+  <main class="conteudo-principal">
+    <!-- Seção Hero com chamada para agendamento -->
+    <section class="hero">
+      <p class="destaque">Bem-vindo!</p>
+      <h2>Cuidado e carinho para o seu melhor amigo</h2>
+      <p>Banho, tosa, veterinário e muito mais em um só lugar.</p>
+      <button id="botaoMensagem">Agende agora</button>
+    </section>
+
+    <!-- Seção de Categorias -->
+    <section class="secao-vitrine">
+      <h3 class="titulo-secao">Categorias</h3>
+      <div class="grade-categorias">
+        <a href="produtos.html?categoria=cachorro" class="item-categoria">
+          <div class="icone-categoria">🐶</div>
+          <span>Cachorro</span>
+        </a>
+        <a href="produtos.html?categoria=gato" class="item-categoria">
+          <div class="icone-categoria">🐱</div>
+          <span>Gato</span>
+        </a>
+        <a href="produtos.html?categoria=pássaro" class="item-categoria">
+          <div class="icone-categoria">🐦</div>
+          <span>Pássaro</span>
+        </a>
+        <a href="produtos.html?categoria=peixe" class="item-categoria">
+          <div class="icone-categoria">🐟</div>
+          <span>Peixe</span>
+        </a>
+        <a href="produtos.html?categoria=roedores" class="item-categoria">
+          <div class="icone-categoria">🐰</div>
+          <span>Roedores</span>
+        </a>
+        <a href="produtos.html?categoria=casa" class="item-categoria">
+          <div class="icone-categoria">🏠</div>
+          <span>Casa</span>
+        </a>
+        <a href="produtos.html?categoria=jardim" class="item-categoria">
+          <div class="icone-categoria">🌱</div>
+          <span>Jardim</span>
+        </a>
+        <a href="produtos.html?categoria=piscina" class="item-categoria">
+          <div class="icone-categoria">🏊</div>
+          <span>Piscina</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Ofertas pra Cão -->
+    <section id="produtos" class="secao-vitrine">
+      <div class="cabecalho-vitrine">
+        <h3 class="titulo-secao">Ofertas pra Cão</h3>
+        <div class="controles-vitrine">
+          <button class="botao-carrossel" aria-label="Anterior">&lt;</button>
+          <button class="botao-carrossel" aria-label="Próximo">&gt;</button>
+        </div>
+      </div>
+
+      <div class="linha-produtos">
+        <!-- Banner Destaque Cão -->
+        <div class="card-banner">
+          <div class="banner-conteudo">
+            <span class="banner-tag">até</span>
+            <strong class="banner-desconto">50<sup>%</sup><small>OFF</small></strong>
+            <button class="botao-banner">Comprar agora</button>
+          </div>
+        </div>
+
+        <!-- Produto 1 -->
+        <article class="card-produto">
+          <div class="produto-imagem">
+            <span class="produto-emoji">🦮</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Toh <span class="produto-nota">★ 5.0</span></span>
+            <h4 class="produto-nome">Adaptador para Cinto de Segurança Toh Fiji</h4>
+            <p class="preco-antigo">À vista por R$ 59,90</p>
+            <p class="preco-atual">R$ 54,99</p>
+            <p class="preco-assinante">R$ 49,49 <span class="badge-desconto">-10%</span></p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+
+        <!-- Produto 2 -->
+        <article class="card-produto">
+          <span class="tag-promo">Desconto</span>
+          <div class="produto-imagem">
+            <span class="produto-emoji">🎾</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Flicks <span class="produto-nota">★ 4.4</span></span>
+            <h4 class="produto-nome">Brinquedo Bolinha Cordão Trançado Flicks</h4>
+            <p class="preco-antigo">À vista por <s>R$ 29,90</s></p>
+            <p class="preco-atual">R$ 26,90 <span class="badge-desconto">-10%</span></p>
+            <p class="preco-assinante">R$ 26,90</p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+
+        <!-- Produto 3 -->
+        <article class="card-produto">
+          <span class="tag-promo">Mais vendido</span>
+          <div class="produto-imagem">
+            <span class="produto-emoji">🍍</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Flicks <span class="produto-nota">★ 4.6</span></span>
+            <h4 class="produto-nome">Brinquedo Mordedor Abacaxi Flicks</h4>
+            <p class="preco-antigo">À vista por <s>R$ 21,90</s></p>
+            <p class="preco-atual">R$ 19,70 <span class="badge-desconto">-10%</span></p>
+            <p class="preco-assinante">R$ 19,70</p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+
+        <!-- Produto 4 -->
+        <article class="card-produto">
+          <span class="tag-promo">Mais vendido</span>
+          <div class="produto-imagem">
+            <span class="produto-emoji">🦴</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Flicks <span class="produto-nota">★ 4.5</span></span>
+            <h4 class="produto-nome">Bolinha de Borracha com Cordão Flicks</h4>
+            <p class="preco-antigo">À vista por <s>R$ 39,90</s></p>
+            <p class="preco-atual">R$ 35,90 <span class="badge-desconto">-10%</span></p>
+            <p class="preco-assinante">R$ 35,90</p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Ofertas pra Gato -->
+    <section class="secao-vitrine">
+      <div class="cabecalho-vitrine">
+        <h3 class="titulo-secao">Ofertas pra Gato</h3>
+        <div class="controles-vitrine">
+          <button class="botao-carrossel" aria-label="Anterior">&lt;</button>
+          <button class="botao-carrossel" aria-label="Próximo">&gt;</button>
+        </div>
+      </div>
+
+      <div class="linha-produtos">
+        <!-- Banner Destaque Gato -->
+        <div class="card-banner banner-gato">
+          <div class="banner-conteudo">
+            <span class="banner-tag">até</span>
+            <strong class="banner-desconto">40<sup>%</sup><small>OFF</small></strong>
+            <button class="botao-banner">Comprar agora</button>
+          </div>
+        </div>
+
+        <!-- Produto 1 Gato -->
+        <article class="card-produto">
+          <div class="produto-imagem">
+            <span class="produto-emoji">🪄</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Savana Pet <span class="produto-nota">★ 5.0</span></span>
+            <h4 class="produto-nome">Brinquedo Varinha com Caveira Savana</h4>
+            <p class="preco-antigo">À vista por</p>
+            <p class="preco-atual">R$ 19,90</p>
+            <p class="preco-assinante">R$ 17,91 <span class="badge-desconto">-10%</span></p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+
+        <!-- Produto 2 Gato -->
+        <article class="card-produto">
+          <div class="produto-imagem">
+            <span class="produto-emoji">🪶</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Savana Pet <span class="produto-nota">★ 4.8</span></span>
+            <h4 class="produto-nome">Brinquedo Varinha com Olho Savana</h4>
+            <p class="preco-antigo">À vista por</p>
+            <p class="preco-atual">R$ 19,90</p>
+            <p class="preco-assinante">R$ 17,91 <span class="badge-desconto">-10%</span></p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+
+        <!-- Produto 3 Gato -->
+        <article class="card-produto">
+          <div class="produto-imagem">
+            <span class="produto-emoji">🧶</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Savana Pet <span class="produto-nota">★ 5.0</span></span>
+            <h4 class="produto-nome">Brinquedo Ratinho e Bola com Guizo Savana Pet Vermelho</h4>
+            <p class="preco-antigo">À vista por</p>
+            <p class="preco-atual">R$ 15,90</p>
+            <p class="preco-assinante">R$ 14,31 <span class="badge-desconto">-10%</span></p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+
+        <!-- Produto 4 Gato -->
+        <article class="card-produto">
+          <div class="produto-imagem">
+            <span class="produto-emoji">🐭</span>
+            <button class="botao-carrinho" title="Adicionar ao carrinho">🛒</button>
+          </div>
+          <div class="produto-dados">
+            <span class="produto-marca">Savana Pet <span class="produto-nota">★ 5.0</span></span>
+            <h4 class="produto-nome">Brinquedo Ratinho de Natal Savana Pet 2 Unidades</h4>
+            <p class="preco-antigo">À vista por</p>
+            <p class="preco-atual">R$ 15,90</p>
+            <p class="preco-assinante">R$ 14,31 <span class="badge-desconto">-10%</span></p>
+            <p class="rotulo-programada">📅 Compra Programada</p>
+          </div>
+        </article>
+      </div>
+    </section> 
+  </main>
+
+  <footer class="rodape">
+    <p>© 2026 - Alexandre Alencar</p>
+  </footer>
+
+  <!-- Modal de Agendamento -->
+  <div id="modalAgendamento" class="modal-overlay">
+    <div class="modal">
+      <button id="fecharModal" class="modal-fechar">&times;</button>
+      <h3>Agendar Horário</h3>
+
+      <form id="formAgendamento">
+        <label for="Dono(a)">Dono (a):</label>
+        <input type="text" id="Dono(a)" name="Dono(a)" required>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" required>
+
+        <label for="porte">Porte do Animal:</label>
+        <select id="porte" name="porte" required>
+          <option value="">Selecione</option>
+          <option value="pequeno">Pequeno</option>
+          <option value="medio">Médio</option>
+          <option value="grande">Grande</option>
+        </select>
+
+        <label for="raca">Raça:</label>
+        <input type="text" id="raca" name="raca" required>
+
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor" name="valor" readonly>
+
+        <button type="submit" class="modal-enviar">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/main.ts"></script>
+  <script type="module" src="/vitrine.ts"></script>
+</body>
+</html>
