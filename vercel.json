@@ -1,8 +1,11 @@
 {
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
+    { "source": "/", "destination": "/pages/index.html" },
+    { "source": "/index.html", "destination": "/pages/index.html" },
+    { "source": "/servicos.html", "destination": "/pages/servicos.html" },
+    { "source": "/contato.html", "destination": "/pages/contato.html" },
+    { "source": "/admin.html", "destination": "/pages/admin.html" },
+    { "source": "/login.html", "destination": "/pages/login.html" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
 }
