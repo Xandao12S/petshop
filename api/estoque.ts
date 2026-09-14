@@ -1,8 +1,7 @@
-import type { Request, Response } from "express";
 import { google } from "googleapis";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
-const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "Página1";
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "PetShop";
 const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
 
@@ -57,7 +56,7 @@ function obterValoresDoProduto(body: any) {
   ];
 }
 
-export default async function handler(req: Request, res: Response) {
+export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -69,13 +68,14 @@ export default async function handler(req: Request, res: Response) {
   try {
     const auth = obterClienteAutenticado();
 
-    // Testa autenticação antes de executar a operação
     await auth.authorize();
 
     const sheets = google.sheets({
       version: "v4",
       auth,
     });
+
+    // restante do seu código permanece igual
 
     if (req.method === "GET") {
       const resposta = await sheets.spreadsheets.values.get({
