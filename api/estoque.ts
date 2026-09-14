@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";
-const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "";
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "PetShop";
 
 function base64url(texto: string): string {
   return Buffer.from(texto, "utf8").toString("base64url");
@@ -9,7 +9,7 @@ function base64url(texto: string): string {
 
 async function getAccessToken(): Promise<string> {
 const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-let privateKey = process.env.GOOGLE_PRIVATE_KEY || ""
+let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
   privateKey = privateKey.replace(/\\n/g, "\n");
 
   if (!email) {
