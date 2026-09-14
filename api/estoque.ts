@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "19AoW0WmQB9Ei62eZJOff3ljyWlLGS34MB4xxG6_I9fg";
+const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";
 const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "PetShop";
 
 function base64url(texto: string): string {
@@ -8,8 +8,8 @@ function base64url(texto: string): string {
 }
 
 async function getAccessToken(): Promise<string> {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  let privateKey = process.env.GOOGLE_PRIVATE_KEY || "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC/G4+2cAtFzahT\nqEsqKRMvNUA9CuwxcfY5U3lmAmBYMc+yrovelag4I7QaKHvE6rW1F8Wu9yKFXb10\nE7O/jlv9ncmEeiazlpxnS4Xb9jCYAl9n23ZysTeO5+/VkRGENQ3PgaQk4WqxX0S0\na6wqpqbztdm2DXgWmXeOJNFRSt5aB097RauopcPHUiN54CjPYBjcusPCBaV36nyS\nxaTT/tsII/weUTGp7zg6jjieeHVs09huh3PK5yHkQ60Wk2CsGGSmlHjg92DaqAYc\n0Kl5u9AJG5dlY+P+fTfecysXJioHcZfknlA6Y+MY+EmfmT83dOWADcJj0IL24N3C\nrsvlU5gTAgMBAAECggEAEy4fdtZ48ykIX1kRLiqQL9k+2MGLYg0HgspjcT8Ez2U0\nbMEC7bSEfRnsPgHZJjLOSN4Za42HK+50EL3XeP6/Mc2Px5mA395aVS2pwiFL0D3Q\nuHo4wZsSseeKVRtpsCSo/a4LvN3Y2PNwUFFMJr2yHNyf/JsOdeoyKxR745ZJiaxs\nv/tqusTwF6EQ3Ol8DEudKl/urNSXKxi8Pr8QdFFhv1R20GETe82gX1EfDlifxVmq\nVadWxMMiHjxd+g7ihmsBzx8bOzbg361XcPmmC+GMHAlNfkYNOXitjxkJSI+QOqHe\nmNZ0BGushh66+ci0/5jJQ5T19fu6+BmZ+T5OJVQy1QKBgQDhkBGflCS8HphTQZsJ\nXQb2jsLbkiM8vxNEwYmvqGkLtaxFvkBu5LU1bI6p2y3CeMNXptC7hdlN+CrZgfUH\njHQNSdfN2SZdPyPPLLWDglw/7ICReuOSvuREv6pjwE4kVnAmFsgBvMi7IUrHLFr2\nBfhH64QSkKSRXnDhmoaIMN1oZwKBgQDY5ULtEpckZjlRQwSdEkQ3OYz9gVqxcBUb\nnr4AwPMAqkic6GiSKdABBDv8ng6o1cRs9QetdyEPKhkXNTrJPfC7xbWDLs+DIOiH\nGhkLtpYcR+h5UAEbB/vYfOP4JE+7CL+LCTVgL1lOADr7airucC0+EwVa8Po0gaqJ\nwYNN0a13dQKBgQCE2Frox1FTUhmYfz0WKKnfMHlm5AzIzChHCE1VHTSw5tCNSt2b\n8isfSc5ED4hFzuYNi3vH1a8EErL542YyifAXm3P0En5b0MIAVG6bA33dUCbwh5Xc\naXz7WH67vRjIoffvFt+41jzKqXLnFyKDX0S45uakIHgr/Zkx5dZyA4WC5QKBgBBK\n8IMUgWwHjciv6xnNdHhdh1zHqcNocv13KDiwRdDH+dpnjutj3q8k3Ui1qs49+Jpi\nsafzKfWUqPvYUMkrMPk5+c+X5ZipES6M5FK/7XjEYg8y1lJsgBucDhfmymJ3XsQX\n9f16sQ+t7sBSElWE8bEXBrD1JyZokyHz+mQPGyO9AoGBAKPQY+JR5jMVXTY0TFa6\nKQ3QOKuObcWyafdOYABayGTHD4012lcFL5fMS0q0nLOL6GiA/o5At7UPE+poGdsI\nCfEgwFjq7YlXYCxvn+rnLcWcjUxQUek3z3yfSMcrxARGoLKKli6Us4rCH2RcxyGV\nbTLd//RRQkSm5u4iTSvxws4u\n-----END PRIVATE KEY-----\n";
+const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+let privateKey = process.env.GOOGLE_PRIVATE_KEY || ""
   privateKey = privateKey.replace(/\\n/g, "\n");
 
   if (!email) {
