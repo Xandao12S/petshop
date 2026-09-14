@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";
-const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "PetShop";
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "";
 
 function base64url(texto: string): string {
   return Buffer.from(texto, "utf8").toString("base64url");
