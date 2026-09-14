@@ -1,163 +1,184 @@
-import { google } from "googleapis";
+import crypto from "crypto";
 
-const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
-const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "PetShop";
-const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
+const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "Página1";
 
-function obterClienteAutenticado() {
-  if (!SPREADSHEET_ID) {
-    throw new Error("A variável GOOGLE_SPREADSHEET_ID não foi configurada.");
-  }
-
-  if (!SERVICE_ACCOUNT_EMAIL) {
-    throw new Error(
-      "A variável GOOGLE_SERVICE_ACCOUNT_EMAIL não foi configurada."
-    );
-  }
-
-  if (!PRIVATE_KEY) {
-    throw new Error("A variável GOOGLE_PRIVATE_KEY não foi configurada.");
-  }
-
-  const privateKey = PRIVATE_KEY.replace(/\\n/g, "\n");
-
-  return new google.auth.JWT({
-    email: SERVICE_ACCOUNT_EMAIL,
-    key: privateKey,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
+function base64url(texto: string): string {
+  return Buffer.from(texto, "utf8").toString("base64url");
 }
 
-function obterLinhaComoProduto(row: string[], index: number) {
+async function getAccessToken(): Promise<string> {
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
+  privateKey = privateKey.replace(/\\n/g, "\n");
+
+  if (!email) {
+    throw new Error("Variavel GOOGLE_SERVICE_ACCOUNT_EMAIL nao configurada na Vercel.");
+  }
+  if (!privateKey) {
+    throw new Error("Variavel GOOGLE_PRIVATE_KEY nao configurada na Vercel.");
+  }
+
+  const agora = Math.floor(Date.now() / 1000);
+  const header = base64url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const payload = base64url(
+    JSON.stringify({
+      iss: email,
+      scope: "https://www.googleapis.com/auth/spreadsheets",
+      aud: "https://oauth2.googleapis.com/token",
+      exp: agora + 3600,
+      iat: agora,
+    })
+  );
+
+  const assinatura = crypto
+    .createSign("RSA-SHA256")
+    .update(`${header}.${payload}`)
+    .sign(privateKey);
+
+  const jwt = `${header}.${payload}.${assinatura.toString("base64url")}`;
+
+  const resposta = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt,
+    }),
+  });
+
+  const dados: any = await resposta.json();
+  if (!dados.access_token) {
+    throw new Error("Falha na autenticacao do Google: " + JSON.stringify(dados));
+  }
+  return dados.access_token;
+}
+
+async function chamarSheets(token: string, url: string, opcoes: any = {}) {
+  const resposta = await fetch(url, {
+    ...opcoes,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      ...(opcoes.headers || {}),
+    },
+  });
+  const dados = await resposta.json();
+  if (!resposta.ok) {
+    throw new Error(`Google Sheets (${resposta.status}): ${JSON.stringify(dados)}`);
+  }
+  return dados;
+}
+
+function montarProduto(row: string[], numeroLinha: number) {
   return {
-    linha: index + 3,
-    produto: String(row[0] ?? ""),
-    marca: String(row[1] ?? ""),
-    categoria: String(row[2] ?? ""),
-    quantidade: String(row[3] ?? "0"),
-    preco: String(row[4] ?? ""),
-    desconto: String(row[5] ?? ""),
-    percentual: String(row[6] ?? ""),
-    imagem: String(row[7] ?? ""),
+    linha: numeroLinha,
+    produto: row[0] || "",
+    marca: row[1] || "",
+    categoria: row[2] || "",
+    quantidade: row[3] || "",
+    preco: row[4] || "",
+    desconto: row[5] || "",
+    percentual: row[6] || "",
+    imagem: row[7] || "",
   };
 }
 
-function obterValoresDoProduto(body: any) {
-  return [
-    String(body.produto ?? ""),
-    String(body.marca ?? ""),
-    String(body.categoria ?? ""),
-    String(body.quantidade ?? "0"),
-    String(body.preco ?? ""),
-    String(body.desconto ?? ""),
-    String(body.percentual ?? ""),
-    String(body.imagem ?? ""),
-  ];
+async function obterSheetId(token: string, base: string): Promise<number> {
+  const dados = await chamarSheets(token, base);
+  const abas = dados.sheets || [];
+  const aba = abas.find((s: any) => s.properties.title === SHEET_NAME);
+  if (!aba) {
+    throw new Error(
+      `A aba "${SHEET_NAME}" nao existe. Abas encontradas: ${abas
+        .map((s: any) => s.properties.title)
+        .join(", ")}`
+    );
+  }
+  return aba.properties.sheetId;
 }
 
 export default async function handler(req: any, res: any) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
   try {
-    const auth = obterClienteAutenticado();
+    const token = await getAccessToken();
+    const base = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}`;
+    const metodo = req.method || "GET";
 
-    await auth.authorize();
-
-    const sheets = google.sheets({
-      version: "v4",
-      auth,
-    });
-
-    // restante do seu código permanece igual
-
-    if (req.method === "GET") {
-      const resposta = await sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${SHEET_NAME}!A3:H`,
-        majorDimension: "ROWS",
-      });
-
-      const linhas = resposta.data.values ?? [];
-
+    if (metodo === "GET") {
+      const url = `${base}/values/${encodeURIComponent(`${SHEET_NAME}!A3:H`)}`;
+      const dados = await chamarSheets(token, url);
+      const linhas: string[][] = dados.values || [];
       const estoque = linhas
-        .map((row, index) => obterLinhaComoProduto(row, index))
-        .filter((item) => item.produto.trim() !== "");
-
+        .map((row, index) => montarProduto(row, index + 3))
+        .filter((p) => p.produto.trim() !== "");
       return res.status(200).json(estoque);
     }
 
-    if (req.method === "POST") {
-      const valores = obterValoresDoProduto(req.body);
+    const corpo =
+      typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
 
-      if (!valores[0].trim()) {
-        return res
-          .status(400)
-          .json({ error: "O nome do produto é obrigatório." });
-      }
-
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${SHEET_NAME}!A:H`,
-        valueInputOption: "USER_ENTERED",
-        requestBody: { values: [valores] },
+    if (metodo === "POST") {
+      const linha = [
+        corpo.produto, corpo.marca, corpo.categoria, corpo.quantidade,
+        corpo.preco, corpo.desconto, corpo.percentual, corpo.imagem,
+      ].map((v) => String(v ?? ""));
+      const url = `${base}/values/${encodeURIComponent(
+        `${SHEET_NAME}!A3:H`
+      )}/append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+      await chamarSheets(token, url, {
+        method: "POST",
+        body: JSON.stringify({ values: [linha] }),
       });
-
-      return res
-        .status(201)
-        .json({ message: "Produto inserido com sucesso na planilha!" });
+      return res.status(200).json({ ok: true });
     }
 
-    if (req.method === "PUT") {
-      const { linha } = req.body;
-      const numLinha = Number(linha);
-
-      if (!numLinha || numLinha < 3) {
-        return res
-          .status(400)
-          .json({ error: "Linha da planilha inválida para alteração." });
+    if (metodo === "PATCH") {
+      const numeroLinha = Number(corpo.linha);
+      if (!numeroLinha) {
+        return res.status(400).json({ erro: "Informe o numero da linha." });
       }
-
-      const valores = obterValoresDoProduto(req.body);
-
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${SHEET_NAME}!A${numLinha}:H${numLinha}`,
-        valueInputOption: "USER_ENTERED",
-        requestBody: { values: [valores] },
+      const linha = [
+        corpo.produto, corpo.marca, corpo.categoria, corpo.quantidade,
+        corpo.preco, corpo.desconto, corpo.percentual, corpo.imagem,
+      ].map((v) => String(v ?? ""));
+      const url = `${base}/values/${encodeURIComponent(
+        `${SHEET_NAME}!A${numeroLinha}:H${numeroLinha}`
+      )}?valueInputOption=USER_ENTERED`;
+      await chamarSheets(token, url, {
+        method: "PUT",
+        body: JSON.stringify({ values: [linha] }),
       });
-
-      return res.status(200).json({ message: "Produto atualizado na planilha!" });
+      return res.status(200).json({ ok: true });
     }
 
-    if (req.method === "DELETE") {
-      const numLinha = Number(req.query.linha || req.body?.linha);
-
-      if (!numLinha || numLinha < 3) {
-        return res
-          .status(400)
-          .json({ error: "Linha da planilha inválida para exclusão." });
+    if (metodo === "DELETE") {
+      const numeroLinha = Number(corpo.linha);
+      if (!numeroLinha) {
+        return res.status(400).json({ erro: "Informe o numero da linha." });
       }
-
-      await sheets.spreadsheets.values.clear({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${SHEET_NAME}!A${numLinha}:H${numLinha}`,
+      const sheetId = await obterSheetId(token, base);
+      await chamarSheets(token, `${base}/batchUpdate`, {
+        method: "POST",
+        body: JSON.stringify({
+          requests: [
+            {
+              deleteDimension: {
+                range: {
+                  sheetId,
+                  dimension: "ROWS",
+                  startIndex: numeroLinha - 1,
+                  endIndex: numeroLinha,
+                },
+              },
+            },
+          ],
+        }),
       });
-
-      return res.status(200).json({ message: "Produto removido da planilha!" });
+      return res.status(200).json({ ok: true });
     }
 
-    return res.status(405).json({ error: "Método não permitido." });
+    return res.status(405).json({ erro: "Metodo nao permitido." });
   } catch (erro: any) {
-    console.error(erro);
-    return res
-      .status(500)
-      .json({ error: "Erro ao acessar a planilha: " + erro.message });
+    return res.status(500).json({ erro: String(erro?.message || erro) });
   }
 }
