@@ -1,16 +1,16 @@
-import "dotenv/config";
-import crypto from "crypto";
+require("dotenv").config({ path: ".env.local" });
+const crypto = require("crypto");
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";
 const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "PetShop";
 
-function base64url(texto: string): string {
+function base64url(texto) {
   return Buffer.from(texto, "utf8").toString("base64url");
 }
 
-async function getAccessToken(): Promise<string> {
-const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
+async function getAccessToken() {
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
   privateKey = privateKey.replace(/\\n/g, "\n");
 
   if (!email) {
@@ -48,14 +48,14 @@ let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
     }),
   });
 
-  const dados: any = await resposta.json();
+  const dados = await resposta.json();
   if (!dados.access_token) {
     throw new Error("Falha na autenticacao do Google: " + JSON.stringify(dados));
   }
   return dados.access_token;
 }
 
-async function chamarSheets(token: string, url: string, opcoes: any = {}) {
+async function chamarSheets(token, url, opcoes = {}) {
   const resposta = await fetch(url, {
     ...opcoes,
     headers: {
@@ -71,7 +71,7 @@ async function chamarSheets(token: string, url: string, opcoes: any = {}) {
   return dados;
 }
 
-function montarProduto(row: string[], numeroLinha: number) {
+function montarProduto(row, numeroLinha) {
   return {
     linha: numeroLinha,
     produto: row[0] || "",
@@ -85,21 +85,21 @@ function montarProduto(row: string[], numeroLinha: number) {
   };
 }
 
-async function obterSheetId(token: string, base: string): Promise<number> {
+async function obterSheetId(token, base) {
   const dados = await chamarSheets(token, base);
   const abas = dados.sheets || [];
-  const aba = abas.find((s: any) => s.properties.title === SHEET_NAME);
+  const aba = abas.find((s) => s.properties.title === SHEET_NAME);
   if (!aba) {
     throw new Error(
       `A aba "${SHEET_NAME}" nao existe. Abas encontradas: ${abas
-        .map((s: any) => s.properties.title)
+        .map((s) => s.properties.title)
         .join(", ")}`
     );
   }
   return aba.properties.sheetId;
 }
 
-export default async function handler(req: any, res: any) {
+module.exports = async function handler(req, res) {
   try {
     const token = await getAccessToken();
     const base = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}`;
@@ -108,7 +108,7 @@ export default async function handler(req: any, res: any) {
     if (metodo === "GET") {
       const url = `${base}/values/${encodeURIComponent(`${SHEET_NAME}!A3:H`)}`;
       const dados = await chamarSheets(token, url);
-      const linhas: string[][] = dados.values || [];
+      const linhas = dados.values || [];
       const estoque = linhas
         .map((row, index) => montarProduto(row, index + 3))
         .filter((p) => p.produto.trim() !== "");
@@ -179,7 +179,7 @@ export default async function handler(req: any, res: any) {
     }
 
     return res.status(405).json({ erro: "Metodo nao permitido." });
-  } catch (erro: any) {
+  } catch (erro) {
     return res.status(500).json({ erro: String(erro?.message || erro) });
   }
-}
+};
