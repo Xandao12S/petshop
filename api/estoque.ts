@@ -1,3 +1,4 @@
+import "dotenv/config";
 import crypto from "crypto";
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";

@@ -3,7 +3,7 @@ import "./style.css";
 // ==========================================
 // E-MAILS AUTORIZADOS
 // ==========================================
-const EMAILS_AUTORIZADOS = ["ti@petshop.com"].map((email) =>
+const EMAILS_AUTORIZADOS = ["ale@a.com"].map((email) =>
   email.trim().toLowerCase()
 );
 
@@ -437,7 +437,7 @@ async function carregarEstoque(): Promise<void> {
     const resposta = await fetch("/api/estoque");
     if (!resposta.ok) {
       const erroDados = await resposta.json().catch(() => ({}));
-      throw new Error(erroDados.error || "Falha ao carregar estoque.");
+      throw new Error(erroDados.erro || erroDados.error || "Falha ao carregar estoque.");
     }
 
     const produtos: ItemEstoque[] = await resposta.json();
@@ -513,7 +513,7 @@ formNovoEstoque.addEventListener("submit", async (evento) => {
 
   try {
     const url = "/api/estoque";
-    const metodo = linha ? "PUT" : "POST";
+    const metodo = linha ? "PATCH" : "POST";
 
     const resp = await fetch(url, {
       method: metodo,

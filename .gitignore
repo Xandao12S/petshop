@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 petshop-508212-0c0c712138dc.json
+
+.vercel
+.env*
